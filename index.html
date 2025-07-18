@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en"
+  x-data="{
+    darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
+    navOpen: false,
+    activeSection: 'home'
+  }"
+  x-init="
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          activeSection = entry.target.id;
+        }
+      });
+    }, { threshold: 0.6 });
+    document.querySelectorAll('section').forEach(section => observer.observe(section));
+  "
+  :class="{ dark: darkMode }"
+  class="transition-colors duration-300 scroll-smooth relative">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KK Computers | Hack the Web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            'inner-glow': 'inset 0 0 8px rgba(255,255,255,0.3)',
+          },
+          animation: {
+            'spin-slow': 'spin-slow 20s linear infinite'
+          },
+          keyframes: {
+            'spin-slow': {
+              '0%': { transform: 'rotate(0deg)' },
+              '100%': { transform: 'rotate(360deg)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    .glass {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+<body class="bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
+
+<!-- Floating Background Animation -->
+<div class="absolute inset-0 overflow-hidden -z-10 pointer-events-none">
+  <div class="animate-pulse absolute w-40 h-40 bg-blue-500/10 rounded-full top-[10%] left-[10%] blur-3xl"></div>
+  <div class="animate-ping absolute w-56 h-56 bg-pink-500/10 rounded-full top-[60%] left-[70%] blur-3xl"></div>
+  <div class="animate-spin-slow absolute w-32 h-32 bg-purple-400/10 rounded-full bottom-[20%] right-[20%] blur-2xl"></div>
+</div>
+
+<!-- Navbar -->
+<header class="fixed w-full z-50 bg-white/80 dark:bg-black/30 backdrop-blur border-b border-gray-200 dark:border-white/10 transition-all">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-gray-900 dark:text-white"><img src="images/kk.png" alt="KK Computers Logo" class="inline-block h-12 mr-2  ">KK Computers</h1>
+    <nav class="hidden md:flex space-x-6 text-sm font-medium relative">
+      <template x-for="link in ['home', 'services', 'events', 'contact']">
+        <a :href="'#' + link"
+           :class="activeSection === link
+                    ? 'text-blue-600 dark:text-blue-400 font-semibold after:w-full'
+                    : 'text-gray-700 dark:text-gray-300 after:w-0 hover:text-blue-600 dark:hover:text-blue-400'"
+           class="relative transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-md after:content-[''] after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:bg-blue-500 dark:after:bg-blue-400 after:transition-all after:duration-300 hover:after:w-full capitalize"
+           x-text="link"></a>
+      </template>
+    </nav>
+    <div class="flex items-center space-x-4">
+      <a href="#contact" class="hidden md:inline-block px-5 py-2 bg-blue-600 text-white rounded-full text-sm font-semibold shadow transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:bg-blue-700">
+        Join Us
+      </a>
+      <div class="relative w-11 h-11 rounded-full backdrop-blur bg-white/10 border border-white/20 shadow-inner cursor-pointer transition duration-300 hover:ring-2 hover:ring-blue-400/50 group"
+           @click="darkMode = !darkMode"
+           x-bind:class="{ 'ring-2 ring-blue-400/40': darkMode }">
+        <div class="absolute inset-0 flex items-center justify-center transition-all duration-500">
+          <template x-if="!darkMode">
+            <span class="text-yellow-400 text-xl transition-transform duration-500 group-hover:animate-bounce">🌞</span>
+          </template>
+          <template x-if="darkMode">
+            <span class="text-blue-300 text-xl transition-transform duration-500 group-hover:animate-pulse">🌙</span>
+          </template>
+        </div>
+      </div>
+      <button class="md:hidden text-gray-700 dark:text-gray-300" @click="navOpen = !navOpen">
+        <svg x-show="!navOpen" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+        </svg>
+        <svg x-show="navOpen" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="md:hidden" x-show="navOpen" x-transition>
+    <div class="px-6 pt-4 pb-6 space-y-3 bg-white dark:bg-black shadow-xl">
+      <a href="#home" class="block text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-blue-500">Home</a>
+      <a href="#services" class="block text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-blue-500">Services</a>
+      <a href="#events" class="block text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-blue-500">Events</a>
+      <a href="#contact" class="block text-sm font-medium text-gray-800 dark:text-gray-300 hover:text-blue-500">Contact</a>
+      <a href="#contact" class="block w-fit px-4 py-2 text-sm font-semibold bg-blue-600 text-white rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:bg-blue-700">
+        Join Us
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section id="home" class="pt-32 pb-20 text-center px-4" data-aos="fade-up">
+  <!-- Light Mode Image -->
+  <img src="images/cat-2.jpg"
+       alt="Hero Background Light"
+       x-show="!darkMode"
+       class="absolute inset-0 w-full h-full object-cover opacity-40 -z-7 transition-opacity duration-300">
+
+  <!-- Dark Mode Image -->
+  <img src="images/carousel-1.jpg"
+       alt="Hero Background Dark"
+       x-show="darkMode"
+       class="absolute inset-0 w-full h-full object-cover opacity-20 -z-10 transition-opacity duration-300">
+
+  <p class="text-gray-500 dark:text-gray-400 text-sm mb-2">✦ Digital Skills. Real Impact.</p>
+  <h2 class="text-5xl font-bold leading-tight mb-4">
+    Empowering Youth<br>
+    <span class="text-gray-700 dark:text-gray-400">Through IT Training</span>
+  </h2>
+  <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+    KK Computers focuses on digital literacy, practical skills, and development-driven education for aspiring tech professionals.
+  </p>
+  <div class="mt-6">
+    <a href="#contact" class="px-6 py-3 rounded-full bg-black text-white dark:bg-white dark:text-black font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:opacity-90">
+      Get in Touch
+    </a>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-24 px-6 max-w-7xl mx-auto" data-aos="fade-up">
+  <h3 class="text-3xl font-bold text-center mb-12">
+    Our <span class="text-gray-500 dark:text-gray-400">Services</span>
+  </h3>
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="glass p-6 rounded-xl shadow hover:shadow-xl transition" data-aos="fade-up" data-aos-delay="100"><img src="images/it training.jpg" alt="">
+      <h4 class="text-xl font-semibold mb-2">💻 IT Training</h4>
+      <p class="text-gray-600 dark:text-gray-300">Hands-on training in software development, web technologies, and digital tools.</p>
+    </div>
+    <div class="glass p-6 rounded-xl shadow hover:shadow-xl transition" data-aos="fade-up" data-aos-delay="200"><img src="images/certification.jpg" alt="">
+      <h4 class="text-xl font-semibold mb-2">📜 Certifications</h4>
+      <p class="text-gray-600 dark:text-gray-300">Industry-relevant certificates that validate skills and enhance employability.</p>
+    </div>
+    <div class="glass p-6 rounded-xl shadow hover:shadow-xl transition" data-aos="fade-up" data-aos-delay="300"><img src="images/softwareproject.jpg" alt="">
+      <h4 class="text-xl font-semibold mb-2">🧠 Software Projects</h4>
+      <p class="text-gray-600 dark:text-gray-300">Real-time development projects to build portfolios and confidence.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Events Section -->
+<section id="events" class="py-20 px-6 max-w-7xl mx-auto" data-aos="fade-up">
+  <h3 class="text-3xl font-bold text-center mb-12">
+    Featured <span class="text-gray-500 dark:text-gray-400">Event</span>
+  </h3>
+  <div class="glass p-8 rounded-xl max-w-3xl mx-auto text-center"><img src="images/carousel-2.jpg" alt="">
+    <h4 class="text-2xl font-semibold mb-2">🚀 Hack the Web</h4>
+    <p class="text-gray-600 dark:text-gray-300">
+      Our flagship web development contest where students solve real-world challenges in a limited time. Showcase your creativity and coding skills in an exciting and competitive environment.
+    </p>
+    <a href="#contact" class="inline-block mt-6 bg-black dark:bg-white text-white dark:text-black px-6 py-3 rounded-full transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:opacity-90">
+      Join Next Hackathon
+    </a>
+  </div>
+</section>
+<!-- Team Section -->
+<section id="team" class="py-20 px-6 max-w-7xl mx-auto" data-aos="fade-up">
+  <h3 class="text-3xl font-bold text-center mb-12">Meet the <span class="text-gray-500 dark:text-gray-400">Team</span></h3>
+  <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+    <img src="images/team-1.jpg" alt="Team 1" class="rounded-xl shadow">
+    <img src="images/team-2.jpg" alt="Team 2" class="rounded-xl shadow">
+    <img src="images/team-3.jpg" alt="Team 3" class="rounded-xl shadow">
+    <img src="images/team-4.jpg" alt="Team 4" class="rounded-xl shadow">
+  </div>
+</section>
+<!-- Partners Section -->
+<section id="partners" class="py-16 px-6 max-w-7xl mx-auto text-center" data-aos="fade-up">
+  <h3 class="text-3xl font-bold mb-12">Our <span class="text-gray-500 dark:text-gray-400">Partners</span></h3>
+  <div class="flex flex-wrap justify-center items-center gap-8">
+    <img src="images/nsdc.png" alt="NSDC" class="h-16 object-contain">
+    <img src="images/pmkvy.png" alt="PMKVY" class="h-16 object-contain">
+    <img src="images/ddugky.png" alt="DDUGKY" class="h-16 object-contain">
+    <img src="images/mepma.png" alt="MEPMA" class="h-16 object-contain">
+    <img src="images/sc.png" alt="SC" class="h-16 object-contain">
+  </div>
+
+<!-- Contact Section -->
+<section id="contact" class="py-20 text-center" data-aos="fade-up">
+  <h3 class="text-2xl font-bold mb-6">
+    Let’s <span class="text-gray-500 dark:text-gray-400">Connect</span>
+  </h3>
+  <p class="text-gray-600 dark:text-gray-300 mb-4">
+    Questions? Need more info? Reach out to our team or join the WhatsApp group.
+  </p>
+  <a href="https://chat.whatsapp.com/Lk2sncNRIVWHU7G8pBqybh" target="_blank"
+     class="px-6 py-3 rounded-full bg-black text-white dark:bg-white dark:text-black font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hover:opacity-90">
+    Join WhatsApp Group
+  </a>
+</section>
+
+<!-- Footer -->
+<footer class="text-center text-gray-400 text-sm py-6 border-t border-gray-200 dark:border-white/10 mt-12">
+  © 2025 KK Computers. All rights reserved.
+</footer>
+
+<!-- Scroll to Top Button -->
+<button
+  x-data="{ showTop: false }"
+  x-init="window.addEventListener('scroll', () => showTop = window.scrollY > 300)"
+  x-show="showTop"
+  @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+  class="fixed bottom-6 right-6 z-50 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 animate-bounce"
+>
+  ⬆️
+</button>
+
+<!-- AOS Init -->
+<script>
+  AOS.init({ once: true, duration: 800 });
+</script>
+
+<!-- Tawk.to Chat Script -->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://chat.whatsapp.com/Lk2sncNRIVWHU7G8pBqybh';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
+</body>
+</html>
